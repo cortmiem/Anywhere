@@ -111,6 +111,12 @@ extension LWIPStack {
             self.lwipQueue.async {
                 self.totalBytesOut += uploadBytes
                 for packet in packets {
+                    // Intercept packets destined for the loopback address (10.7.0.1).
+                    // These are reflected back to the source at the IP level so that
+                    // local servers on the device can receive them — LWIP is bypassed.
+                    if self.tryHandleLoopbackPacket(packet) {
+                        continue
+                    }
                     packet.withUnsafeBytes { buffer in
                         guard let baseAddress = buffer.baseAddress else { return }
                         lwip_bridge_input(baseAddress, Int32(buffer.count))

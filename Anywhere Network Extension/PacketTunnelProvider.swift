@@ -117,17 +117,17 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 completionHandler(error)
                 return
             }
-            
+
 #if os(iOS)
             if #available(iOS 18.0, *) {
                 ControlCenter.shared.reloadControls(ofKind: "com.argsment.Anywhere.Widget.VPNToggle")
             }
 #endif
-            
+
             self.lwipStack.start(packetFlow: self.packetFlow,
                                  configuration: configuration)
             self.startMonitoringPath()
-            
+
             completionHandler(nil)
         }
     }
@@ -173,7 +173,14 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 
         let hideVPNIcon = AWCore.getHideVPNIcon()
         let ipv4Settings = NEIPv4Settings(addresses: ["10.8.0.2"], subnetMasks: ["255.255.255.0"])
-        ipv4Settings.includedRoutes = [NEIPv4Route.default()]
+        // The loopback gateway (10.7.0.1) sits inside the 10.0.0.0/8 bypass range, so
+        // we add a more-specific /32 included route to pull it back into the tunnel.
+        // The kernel's longest-prefix-match rule then routes 10.7.0.1 through the VPN
+        // while the rest of 10.0.0.0/8 keeps going via the physical interface.
+        ipv4Settings.includedRoutes = [
+            NEIPv4Route.default(),
+            NEIPv4Route(destinationAddress: "10.7.0.1", subnetMask: "255.255.255.255"),
+        ]
         ipv4Settings.excludedRoutes = (hideVPNIcon ? [NEIPv4Route(destinationAddress: "0.0.0.0", subnetMask: "255.255.255.254")] : []) + Self.bypassIPv4Routes
         settings.ipv4Settings = ipv4Settings
 
@@ -243,7 +250,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
             ControlCenter.shared.reloadControls(ofKind: "com.argsment.Anywhere.Widget.VPNToggle")
         }
 #endif
-        
+
         stopMonitoringPath()
         logTunnelStop(reason: reason)
         lwipStack.stop()
