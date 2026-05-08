@@ -38,7 +38,11 @@ final class AWCore {
     /// have not been explicitly written, so user-set values always win.
     /// Swift's `static let` semantics make this thread-safe and run-once.
     private static let userDefaults: UserDefaults = {
-        let defaults = UserDefaults(suiteName: Identifier.appGroupSuite)!
+        // Fall back to UserDefaults.standard when the App Group container is
+        // unavailable (e.g. the signing certificate has not been granted the
+        // App Group entitlement). The Network Extension will not share state
+        // in that case, but the app itself will launch and run normally.
+        let defaults = UserDefaults(suiteName: Identifier.appGroupSuite) ?? .standard
         defaults.register(defaults: registeredDefaults)
         return defaults
     }()
@@ -100,12 +104,12 @@ final class AWCore {
     }
 
     // MARK: - Typed UserDefaults Accessors
-    
+
     // App
     static func getIdentifier() -> String {
         userDefaults.string(forKey: UserDefaultsKey.identifier)!
     }
-    
+
     static func getOnboardingCompleted() -> Bool {
         userDefaults.bool(forKey: UserDefaultsKey.onboardingCompleted)
     }
@@ -122,11 +126,11 @@ final class AWCore {
     static func setLastConfigurationData(_ data: Data) {
         userDefaults.set(data, forKey: UserDefaultsKey.lastConfigurationData)
     }
-    
+
     static func getSelectedConfigurationId() -> UUID? {
         userDefaults.string(forKey: UserDefaultsKey.selectedConfigurationId).flatMap(UUID.init(uuidString:))
     }
-    
+
     static func setSelectedConfigurationId(_ id: UUID?) {
         if let id {
             userDefaults.set(id.uuidString, forKey: UserDefaultsKey.selectedConfigurationId)
@@ -138,7 +142,7 @@ final class AWCore {
     static func getSelectedChainId() -> UUID? {
         userDefaults.string(forKey: UserDefaultsKey.selectedChainId).flatMap(UUID.init(uuidString:))
     }
-    
+
     static func setSelectedChainId(_ id: UUID?) {
         if let id {
             userDefaults.set(id.uuidString, forKey: UserDefaultsKey.selectedChainId)
@@ -146,7 +150,7 @@ final class AWCore {
             userDefaults.removeObject(forKey: UserDefaultsKey.selectedChainId)
         }
     }
-    
+
     static func getProxyServerAddressesData() -> Data? {
         userDefaults.data(forKey: UserDefaultsKey.proxyServerAddresses)
     }
@@ -154,7 +158,7 @@ final class AWCore {
     static func setProxyServerAddressesData(_ data: Data) {
         userDefaults.set(data, forKey: UserDefaultsKey.proxyServerAddresses)
     }
-    
+
     static func getRoutingData() -> Data? {
         userDefaults.data(forKey: UserDefaultsKey.routingData)
     }
@@ -171,11 +175,11 @@ final class AWCore {
     static func setAlwaysOnEnabled(_ value: Bool) {
         userDefaults.set(value, forKey: UserDefaultsKey.alwaysOnEnabled)
     }
-    
+
     static func getProxyMode() -> ProxyMode {
         ProxyMode(rawValue: userDefaults.string(forKey: UserDefaultsKey.proxyMode)!) ?? .rule
     }
-    
+
     static func setProxyMode(_ proxyMode: ProxyMode) {
         userDefaults.set(proxyMode.rawValue, forKey: UserDefaultsKey.proxyMode)
     }
@@ -187,7 +191,7 @@ final class AWCore {
     static func setBypassCountryCode(_ value: String) {
         userDefaults.set(value, forKey: UserDefaultsKey.bypassCountryCode)
     }
-    
+
     static func getRuleSetAssignments() -> [String: String] {
         userDefaults.dictionary(forKey: UserDefaultsKey.ruleSetAssignments) as? [String: String] ?? [:]
     }
@@ -211,7 +215,7 @@ final class AWCore {
     static func setTrustedCertificateFingerprints(_ fingerprints: [String]) {
         userDefaults.set(fingerprints, forKey: UserDefaultsKey.trustedCertificateSHA256s)
     }
-    
+
     static func getExperimentalEnabled() -> Bool {
         userDefaults.bool(forKey: UserDefaultsKey.experimentalEnabled)
     }
@@ -227,7 +231,7 @@ final class AWCore {
     static func setHideVPNIcon(_ value: Bool) {
         userDefaults.set(value, forKey: UserDefaultsKey.hideVPNIcon)
     }
-    
+
     static func getBlockQUICEnabled() -> Bool {
         userDefaults.bool(forKey: UserDefaultsKey.blockQUICEnabled)
     }
@@ -235,7 +239,7 @@ final class AWCore {
     static func setBlockQUICEnabled(_ value: Bool) {
         userDefaults.set(value, forKey: UserDefaultsKey.blockQUICEnabled)
     }
-    
+
     static func getIPv6DNSEnabled() -> Bool {
         userDefaults.bool(forKey: UserDefaultsKey.ipv6DNSEnabled)
     }
@@ -247,27 +251,27 @@ final class AWCore {
     static func getEncryptedDNSEnabled() -> Bool {
         userDefaults.bool(forKey: UserDefaultsKey.encryptedDNSEnabled)
     }
-    
+
     static func setEncryptedDNSEnabled(_ value: Bool) {
         userDefaults.set(value, forKey: UserDefaultsKey.encryptedDNSEnabled)
     }
-    
+
     static func getEncryptedDNSProtocol() -> String {
         userDefaults.string(forKey: UserDefaultsKey.encryptedDNSProtocol)!
     }
-    
+
     static func setEncryptedDNSProtocol(_ value: String) {
         userDefaults.set(value, forKey: UserDefaultsKey.encryptedDNSProtocol)
     }
-    
+
     static func getEncryptedDNSServer() -> String {
         userDefaults.string(forKey: UserDefaultsKey.encryptedDNSServer)!
     }
-    
+
     static func setEncryptedDNSServer(_ value: String) {
         userDefaults.set(value, forKey: UserDefaultsKey.encryptedDNSServer)
     }
-    
+
     static func getRemnawaveHWIDEnabled() -> Bool {
         userDefaults.bool(forKey: UserDefaultsKey.remnawaveHWIDEnabled)
     }
@@ -275,7 +279,7 @@ final class AWCore {
     static func setRemnawaveHWIDEnabled(_ value: Bool) {
         userDefaults.set(value, forKey: UserDefaultsKey.remnawaveHWIDEnabled)
     }
-    
+
     // MARK: - Darwin Notification Names
 
     enum Notification {

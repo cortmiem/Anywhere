@@ -51,9 +51,28 @@ final class JSONBlobStore: @unchecked Sendable {
     private let queue = DispatchQueue(label: "com.argsment.Anywhere.jsonblobstore")
 
     private init() {
-        let containerURL = FileManager.default
-            .containerURL(forSecurityApplicationGroupIdentifier: AWCore.Identifier.appGroupSuite)!
-        let config = ModelConfiguration(groupContainer: .identifier("group.com.argsment.Anywhere"))
+        // Resolve the container directory. The App Group shared container is
+        // preferred because it is accessible to the Network Extension too.
+        // When the signing certificate has not been granted the App Group
+        // entitlement (e.g. ad-hoc / personal-team signing) we fall back to
+        // the app's own Documents directory so the store can still be opened
+        // and the app launches normally. The Network Extension will not share
+        // data in that case, but the UI remains fully functional.
+        let groupContainerURL = FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: AWCore.Identifier.appGroupSuite)
+
+        let containerURL: URL
+        let config: ModelConfiguration
+
+        if let groupURL = groupContainerURL {
+            containerURL = groupURL
+            config = ModelConfiguration(groupContainer: .identifier(AWCore.Identifier.appGroupSuite))
+        } else {
+            logger.warning("App Group '\(AWCore.Identifier.appGroupSuite)' unavailable – falling back to Documents directory for SwiftData store")
+            containerURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            let storeURL = containerURL.appendingPathComponent("JSONBlob.store")
+            config = ModelConfiguration(url: storeURL)
+        }
         do {
             container = try ModelContainer(for: JSONBlob.self, configurations: config)
         } catch {
@@ -131,7 +150,9 @@ final class JSONBlobStore: @unchecked Sendable {
             migrateFileIfNeeded(key: key, url: url)
         }
 
-        let userDefaults = UserDefaults(suiteName: AWCore.Identifier.appGroupSuite)!
+        // If the App Group is unavailable there is nothing to migrate from
+        // the shared UserDefaults suite, so skip gracefully.
+        guard let userDefaults = UserDefaults(suiteName: AWCore.Identifier.appGroupSuite) else { return }
         let legacyDefaults: [(Key, String)] = [
             (.customRuleSets, "customRuleSets"),
             (.mitm, "mitmData"),
