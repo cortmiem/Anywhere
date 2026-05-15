@@ -79,7 +79,6 @@ final class AWCore {
         static let ipv6DNSEnabled = "ipv6DNSEnabled"
         static let onboardingCompleted = "onboardingCompleted"
         static let proxyMode = "proxyMode"
-        static let proxyServerAddresses = "proxyServerAddresses"
         static let remnawaveHWIDEnabled = "remnawaveHWIDEnabled"
         static let routingData = "routingData"
         static let ruleSetAssignments = "ruleSetAssignments"
@@ -149,14 +148,6 @@ final class AWCore {
         } else {
             userDefaults.removeObject(forKey: UserDefaultsKey.selectedChainId)
         }
-    }
-
-    static func getProxyServerAddressesData() -> Data? {
-        userDefaults.data(forKey: UserDefaultsKey.proxyServerAddresses)
-    }
-
-    static func setProxyServerAddressesData(_ data: Data) {
-        userDefaults.set(data, forKey: UserDefaultsKey.proxyServerAddresses)
     }
 
     static func getRoutingData() -> Data? {

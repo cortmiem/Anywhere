@@ -9,11 +9,11 @@ import SwiftUI
 
 struct MITMSettingsView: View {
     @StateObject private var store = MITMRuleSetStore.shared
-    
-    @State private var showAdd = false
 
-    @State private var editMode: EditMode = .inactive
-    @State private var editing: MITMRuleSet?
+    @State private var showAddSheet = false
+    @State private var newRuleSetName = ""
+    
+    @State private var showImportSheet = false
 
     var body: some View {
         Form {
@@ -31,21 +31,20 @@ struct MITMSettingsView: View {
                 }
             }
 
-            Section {
+            Section("Rule Sets") {
                 ForEach(store.ruleSets) { ruleSet in
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(ruleSet.domainSuffix)
-                            .foregroundStyle(.primary)
-                        Text(summary(for: ruleSet))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .truncationMode(.middle)
-                            .lineLimit(1)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        editing = ruleSet
+                    NavigationLink {
+                        MITMRuleSetDetailView(ruleSet: ruleSet)
+                    } label: {
+                        VStack(alignment: .leading) {
+                            Text(ruleSet.name)
+                                .foregroundStyle(.primary)
+                            Text(summary(for: ruleSet))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .truncationMode(.middle)
+                                .lineLimit(1)
+                        }
                     }
                 }
                 .onDelete { offsets in
@@ -54,39 +53,43 @@ struct MITMSettingsView: View {
                 .onMove { source, destination in
                     store.moveRuleSets(fromOffsets: source, toOffset: destination)
                 }
-                Button {
-                    showAdd = true
-                } label: {
-                    Label("Add", systemImage: "plus")
-                }
-            } header: {
-                HStack {
-                    Text("Rule Sets")
-                    Spacer()
-                    Button(editMode == .active ? "Done" : "Edit") {
-                        if editMode == .active {
-                            editMode = .inactive
-                        } else {
-                            editMode = .active
-                        }
+            }
+        }
+        .navigationTitle("MITM")
+        .toolbar {
+            ToolbarItem {
+                EditButton()
+            }
+            ToolbarItem {
+                Menu("More", systemImage: "ellipsis") {
+                    Button {
+                        showAddSheet = true
+                    } label: {
+                        Label("Add Rule Set", systemImage: "plus")
+                    }
+                    Button {
+                        showImportSheet = true
+                    } label: {
+                        Label("Import Rule Set", systemImage: "square.and.arrow.down")
                     }
                 }
             }
         }
-        .environment(\.editMode, $editMode)
-        .navigationTitle("MITM")
-        .sheet(isPresented: $showAdd) {
-            NavigationStack {
-                MITMRuleSetEditorView(ruleSet: nil) { ruleSet in
-                    if let ruleSet { store.addRuleSet(ruleSet) }
-                }
+        .alert("Add Rule Set", isPresented: $showAddSheet) {
+            TextField("Name", text: $newRuleSetName)
+            Button("Add") {
+                let name = newRuleSetName.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !name.isEmpty else { return }
+                store.addRuleSet(MITMRuleSet(name: name))
+                newRuleSetName = ""
+            }
+            Button("Cancel", role: .cancel) {
+                newRuleSetName = ""
             }
         }
-        .sheet(item: $editing) { ruleSet in
-            NavigationStack {
-                MITMRuleSetEditorView(ruleSet: ruleSet) { updated in
-                    if let updated { store.updateRuleSet(updated) }
-                }
+        .sheet(isPresented: $showImportSheet) {
+            ImportMITMRuleSetView { ruleSet in
+                store.addRuleSet(ruleSet)
             }
         }
     }
@@ -94,10 +97,18 @@ struct MITMSettingsView: View {
     private func summary(for ruleSet: MITMRuleSet) -> String {
         let count = ruleSet.rules.count
         let rulesPart = String(localized: "\(count) rule(s)")
-        if let target = ruleSet.rewriteTarget {
+        guard let target = ruleSet.rewriteTarget else {
+            return rulesPart
+        }
+        switch target.action {
+        case .transparent:
             let authority = target.port.map { "\(target.host):\($0)" } ?? target.host
             return "→ \(authority) · \(rulesPart)"
+        case .redirect302:
+            let authority = target.port.map { "\(target.host):\($0)" } ?? target.host
+            return "302 → \(authority) · \(rulesPart)"
+        case .reject200:
+            return "Reject 200 · \(rulesPart)"
         }
-        return rulesPart
     }
 }

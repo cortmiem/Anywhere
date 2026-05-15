@@ -21,12 +21,65 @@ enum CompiledMITMOperation {
     case headerAdd(name: String, value: String)
     case headerDelete(nameLower: String)
     case headerReplace(regex: NSRegularExpression, name: String, value: String)
-    case bodyReplace(regex: NSRegularExpression, replacement: String)
+    /// JavaScript transform. ``source`` is the decoded UTF-8 source of
+    /// `function process(ctx)`. Compilation/execution belongs to
+    /// ``MITMScriptEngine`` so the policy stays free of JSContext.
+    /// ``contentTypes`` gates the rule against the message's
+    /// `Content-Type`; see ``BodyContentTypeFilter``.
+    ///
+    /// ``sourceKey`` is a precomputed identifier the engine uses as
+    /// the compile cache key. Hashing the full source on every JS call
+    /// would otherwise be the dominant cost for large scripts (think
+    /// 100 KB) since ``[String: JSValue]`` walks every byte on lookup.
+    /// Computed once at rule-load time via ``Hasher`` so identical
+    /// sources share the same cache entry within a process.
+    case script(source: String, sourceKey: Int, contentTypes: BodyContentTypeFilter)
+    /// Per-frame JavaScript transform. Same runtime contract as
+    /// ``script`` for ctx fields the script reads, but the function is
+    /// invoked once per DATA frame (HTTP/2) or per chunk (HTTP/1
+    /// chunked) and only ``ctx.body`` is read back. Used to keep
+    /// streaming-style bodies flowing without buffering the entire
+    /// response.
+    case streamScript(source: String, sourceKey: Int, contentTypes: BodyContentTypeFilter)
 }
 
-/// Compiled view of a rule set: the suffix it covers, the optional
-/// upstream redirect, and its rules ready to apply.
+/// Resolved Content-Type filter for a script rule. Built once at
+/// rule-compilation time so the per-message check stays a constant-time
+/// set lookup (or a fixed allowlist walk).
+enum BodyContentTypeFilter: Equatable {
+    /// User did not supply a Content-Type list at import time. The
+    /// runtime falls back to ``MITMBodyCodec/isRewritableType``'s
+    /// textual MIME allowlist.
+    case defaultAllowlist
+    /// User-supplied exact-match list, lowercased and trimmed at parse
+    /// time. An empty set matches nothing — the import-time choice to
+    /// pass a `""` field is preserved instead of collapsing to default.
+    case exact(Set<String>)
+
+    /// Whether ``contentType`` is in-scope for the rule this filter
+    /// belongs to. Parameters (everything from `;` onward) are stripped
+    /// before comparison; matching is case-insensitive.
+    func matches(_ contentType: String?) -> Bool {
+        switch self {
+        case .defaultAllowlist:
+            return MITMBodyCodec.isRewritableType(contentType)
+        case .exact(let set):
+            guard let primary = MITMBodyCodec.primaryContentType(contentType) else {
+                return false
+            }
+            return set.contains(primary)
+        }
+    }
+}
+
+/// Compiled view of a rule set at one trie terminal: the specific suffix
+/// reached, the optional upstream redirect, and rules ready to apply. A
+/// source set with multiple suffixes produces one of these per suffix,
+/// each sharing the same compiled rules and target. ``id`` is copied
+/// from the source ``MITMRuleSet`` so the runtime can use it as a
+/// stable scope key for ``MITMScriptStore``.
 struct CompiledMITMRuleSet {
+    let id: UUID
     let domainSuffix: String
     let rewriteTarget: MITMRewriteTarget?
     let rules: [CompiledMITMRule]
@@ -62,9 +115,10 @@ final class MITMRewritePolicy {
     }
 
     /// Replaces the in-memory rule set table from a typed
-    /// ``MITMSnapshot``. Rule sets whose suffix is empty are skipped
-    /// silently. Rules whose regex fails to compile are dropped with a
-    /// log line; the rest of the set still applies.
+    /// ``MITMSnapshot``. Suffixes that are empty are skipped silently;
+    /// a set with no usable suffixes contributes nothing. Rules whose
+    /// regex fails to compile are dropped with a log line; the rest of
+    /// the set still applies.
     ///
     /// Conflict handling: if two sets declare the same suffix, the
     /// later one wins (with a warning).
@@ -73,42 +127,41 @@ final class MITMRewritePolicy {
         for set in ruleSets {
             insert(set)
         }
-        logger.debug("[MITM] Loaded \(setCount) rule set(s)")
+        logger.debug("[MITM] Loaded \(ruleSets.count) rule set(s)")
     }
 
     private func insert(_ set: MITMRuleSet) {
-        let suffix = set.domainSuffix
-            .lowercased()
-            .trimmingCharacters(in: CharacterSet.whitespaces)
-        guard !suffix.isEmpty else { return }
-
-        let labels = suffix.split(separator: ".").map(String.init).reversed()
-        var node = root
-        for label in labels {
-            if let child = node.children[label] {
-                node = child
-            } else {
-                let child = TrieNode()
-                node.children[label] = child
-                node = child
-            }
-        }
+        let suffixes = set.domainSuffixes
+            .map { $0.lowercased().trimmingCharacters(in: CharacterSet.whitespaces) }
+            .filter { !$0.isEmpty }
+        guard !suffixes.isEmpty else { return }
 
         let compiledRules = set.rules.compactMap { rule -> CompiledMITMRule? in
-            guard let op = compile(rule.operation, suffix: suffix) else { return nil }
+            guard let op = compile(rule.operation, suffix: set.name) else { return nil }
             return CompiledMITMRule(phase: rule.phase, operation: op)
         }
 
-        if node.ruleSet != nil {
-            logger.warning("[MITM] Duplicate rule set for suffix \(suffix); later definition wins")
-        } else {
-            setCount += 1
+        for suffix in suffixes {
+            let labels = suffix.split(separator: ".").map(String.init).reversed()
+            var node = root
+            for label in labels {
+                if let child = node.children[label] {
+                    node = child
+                } else {
+                    let child = TrieNode()
+                    node.children[label] = child
+                    node = child
+                }
+            }
+
+            if node.ruleSet == nil { setCount += 1 }
+            node.ruleSet = CompiledMITMRuleSet(
+                id: set.id,
+                domainSuffix: suffix,
+                rewriteTarget: set.rewriteTarget,
+                rules: compiledRules
+            )
         }
-        node.ruleSet = CompiledMITMRuleSet(
-            domainSuffix: suffix,
-            rewriteTarget: set.rewriteTarget,
-            rules: compiledRules
-        )
     }
 
     /// Returns `true` when the hostname is covered by any rule set. Empty
@@ -168,12 +221,57 @@ final class MITMRewritePolicy {
                 return nil
             }
             return .headerReplace(regex: regex, name: name, value: value)
-        case .bodyReplace(let pattern, let replacement):
-            guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
-                logger.warning("[MITM] bodyReplace pattern failed to compile (suffix=\(suffix)): \(pattern)")
+        case .script(let scriptBase64, let contentTypes):
+            guard let source = decodeScript(scriptBase64, suffix: suffix, kind: "script") else {
                 return nil
             }
-            return .bodyReplace(regex: regex, replacement: replacement)
+            return .script(
+                source: source,
+                sourceKey: sourceCacheKey(source),
+                contentTypes: scriptFilter(contentTypes)
+            )
+        case .streamScript(let scriptBase64, let contentTypes):
+            guard let source = decodeScript(scriptBase64, suffix: suffix, kind: "streamScript") else {
+                return nil
+            }
+            return .streamScript(
+                source: source,
+                sourceKey: sourceCacheKey(source),
+                contentTypes: scriptFilter(contentTypes)
+            )
         }
+    }
+
+    /// Produces the compile-cache key for a script source. Mixes both
+    /// the source bytes and the length into the hash so two distinct
+    /// sources of the same length still take different cache slots
+    /// even on the (vanishingly rare) ``Hasher`` byte-content
+    /// collision. Within a process Swift's hasher is stable, which is
+    /// all the engine needs — caches are per-session and the seed
+    /// only has to be consistent for the engine's lifetime.
+    private func sourceCacheKey(_ source: String) -> Int {
+        var hasher = Hasher()
+        hasher.combine(source.utf8.count)
+        hasher.combine(source)
+        return hasher.finalize()
+    }
+
+    private func decodeScript(_ scriptBase64: String, suffix: String, kind: String) -> String? {
+        guard let raw = Data(base64Encoded: scriptBase64) else {
+            logger.warning("[MITM] \(kind) invalid base64 (suffix=\(suffix))")
+            return nil
+        }
+        guard let source = String(data: raw, encoding: .utf8) else {
+            logger.warning("[MITM] \(kind) source not valid UTF-8 (suffix=\(suffix))")
+            return nil
+        }
+        return source
+    }
+
+    private func scriptFilter(_ contentTypes: [String]?) -> BodyContentTypeFilter {
+        if let contentTypes {
+            return .exact(Set(contentTypes.map { $0.lowercased() }))
+        }
+        return .defaultAllowlist
     }
 }

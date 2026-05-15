@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 @MainActor
 class ConfigurationStore: ObservableObject {
@@ -51,25 +52,25 @@ class ConfigurationStore: ObservableObject {
         save()
     }
 
+    /// Reorders standalone configurations (those without a `subscriptionId`) while
+    /// leaving subscription-owned configurations at their original absolute positions.
+    func moveStandaloneConfigurations(fromOffsets source: IndexSet, toOffset destination: Int) {
+        let standaloneIndices = configurations.indices.filter { configurations[$0].subscriptionId == nil }
+        var standalone = standaloneIndices.map { configurations[$0] }
+        standalone.move(fromOffsets: source, toOffset: destination)
+        var updated = configurations
+        for (i, idx) in standaloneIndices.enumerated() {
+            updated[idx] = standalone[i]
+        }
+        configurations = updated
+        save()
+    }
+
     // MARK: - Persistence
 
     private static func load() -> [ProxyConfiguration] {
         guard let data = JSONBlobStore.shared.load(.configurations) else { return [] }
-        return decodeSkippingInvalid(data) ?? []
-    }
-
-    private static func decodeSkippingInvalid(_ data: Data) -> [ProxyConfiguration]? {
-        guard let wrapped = try? JSONDecoder().decode([FailableDecodable<ProxyConfiguration>].self, from: data) else {
-            return nil
-        }
-        return wrapped.compactMap(\.value)
-    }
-
-    private struct FailableDecodable<T: Decodable>: Decodable {
-        let value: T?
-        init(from decoder: Decoder) throws {
-            value = try? T(from: decoder)
-        }
+        return JSONDecoder().decodeSkippingInvalid([ProxyConfiguration].self, from: data) ?? []
     }
 
     private func save() {

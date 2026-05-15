@@ -18,17 +18,33 @@ private let logger = AnywhereLogger(category: "MITM")
 /// rewriter applies the compiled rule list for the host.
 final class MITMHTTP2Rewriter {
 
-    private let host: String
-    private let policy: MITMRewritePolicy
+    let host: String
+    let policy: MITMRewritePolicy
     /// When set, every request's `:authority` pseudo-header is rewritten to
     /// this value. Driven by the rule set's ``rewriteTarget``; nil means
     /// "leave :authority alone".
     private let effectiveAuthority: String?
+    /// Lazy JS runtime, shared with the HTTP/1 streams of the same
+    /// session. Touched only when a script rule fires.
+    let scriptEngineProvider: MITMScriptEngine.Provider
+    /// Cross-direction request bookkeeping. The inbound HTTP/2
+    /// connection records the (post-rewrite) method/url per stream so
+    /// the outbound connection can populate `ctx.method` / `ctx.url`
+    /// on response scripts.
+    let requestLog: MITMRequestLog
 
-    init(host: String, policy: MITMRewritePolicy, effectiveAuthority: String?) {
+    init(
+        host: String,
+        policy: MITMRewritePolicy,
+        effectiveAuthority: String?,
+        scriptEngineProvider: MITMScriptEngine.Provider,
+        requestLog: MITMRequestLog
+    ) {
         self.host = host
         self.policy = policy
         self.effectiveAuthority = effectiveAuthority
+        self.scriptEngineProvider = scriptEngineProvider
+        self.requestLog = requestLog
     }
 
     // MARK: - Headers
@@ -50,41 +66,62 @@ final class MITMHTTP2Rewriter {
         applyHeaderRules(headers, phase: .httpResponse)
     }
 
-    // MARK: - Body rewrite preflight
+    // MARK: - Script preflight + application
 
-    /// Whether any ``bodyReplace`` rule applies for this host + phase.
-    /// The connection uses this to decide whether to buffer DATA frames.
-    func hasBodyRewrite(phase: MITMPhase) -> Bool {
-        policy.rules(for: host, phase: phase).contains {
-            if case .bodyReplace = $0.operation { return true }
-            return false
-        }
+    /// Whether any buffered script rule applies for this host + phase
+    /// with the in-flight message's ``contentType``. Callers should
+    /// check ``hasStreamScriptRule`` first — streaming rules take
+    /// precedence and never coexist with buffered mode on the same
+    /// stream.
+    func hasScriptRule(phase: MITMPhase, contentType: String?) -> Bool {
+        MITMScriptTransform.hasScriptRule(
+            in: policy.rules(for: host, phase: phase),
+            contentType: contentType
+        )
     }
 
-    /// Applies every ``bodyReplace`` rule for the given phase to the
-    /// fully-buffered body. Body rules operate on UTF-8 strings; invalid
-    /// byte sequences are replaced with U+FFFD during decode.
-    func rewriteBody(_ data: Data, phase: MITMPhase) -> Data {
-        let rules = policy.rules(for: host, phase: phase)
-        var bodyString = String(decoding: data, as: UTF8.self)
-        var changed = false
-        for rule in rules {
-            guard case .bodyReplace(let regex, let replacement) = rule.operation else {
-                continue
-            }
-            let range = NSRange(bodyString.startIndex..., in: bodyString)
-            let mutated = regex.stringByReplacingMatches(
-                in: bodyString,
-                options: [],
-                range: range,
-                withTemplate: replacement
-            )
-            if mutated != bodyString {
-                bodyString = mutated
-                changed = true
-            }
-        }
-        return changed ? Data(bodyString.utf8) : data
+    /// Whether any streaming-script rule applies. Streaming rules tell
+    /// the connection to emit HEADERS immediately and run scripts
+    /// per-frame instead of buffering the full body.
+    func hasStreamScriptRule(phase: MITMPhase, contentType: String?) -> Bool {
+        MITMScriptTransform.hasStreamScriptRule(
+            in: policy.rules(for: host, phase: phase),
+            contentType: contentType
+        )
+    }
+
+    /// Compiled rule list for the host/phase, exposed so the connection
+    /// can pass it into ``MITMScriptTransform.applyFrame`` without
+    /// re-resolving the policy on every DATA frame.
+    func rules(phase: MITMPhase) -> [CompiledMITMRule] {
+        policy.rules(for: host, phase: phase)
+    }
+
+    /// The matched rule set's ID, used as the script-store scope key.
+    /// Stable for the rewriter's lifetime since ``host`` is fixed at
+    /// init time.
+    var ruleSetID: UUID? {
+        policy.set(for: host)?.id
+    }
+
+    /// Applies every script rule for the given phase whose Content-Type
+    /// filter accepts the message's `content-type` header. The caller
+    /// is responsible for decompressing the body before passing it in;
+    /// on the ``.message`` branch the returned message has the
+    /// (possibly modified) body in identity form. The
+    /// ``.synthesizedResponse`` branch fires only on request phase when
+    /// the script called `Anywhere.respond(...)` — the caller must
+    /// suppress upstream emission and inject the response on the inner
+    /// leg instead.
+    func applyScripts(
+        _ message: MITMScriptEngine.Message,
+        phase: MITMPhase
+    ) -> MITMScriptTransform.Outcome {
+        MITMScriptTransform.apply(
+            message,
+            rules: policy.rules(for: host, phase: phase),
+            engineProvider: scriptEngineProvider
+        )
     }
 
     // MARK: - Authority rewrite
@@ -149,15 +186,9 @@ final class MITMHTTP2Rewriter {
                     guard regex.firstMatch(in: literal, options: [], range: range) != nil else {
                         return entry
                     }
-                    let rewritten = regex.stringByReplacingMatches(
-                        in: literal,
-                        options: [],
-                        range: range,
-                        withTemplate: "\(name): \(value)"
-                    )
                     return (name: name, value: value)
                 }
-            case .bodyReplace:
+            case .script, .streamScript:
                 continue
             }
         }

@@ -130,8 +130,19 @@ final class MITMSession {
     private let leafCache: MITMLeafCertCache
     private let policy: MITMRewritePolicy
     private let rewriteTarget: MITMRewriteTarget?
-    private let proxyConnection: ProxyConnection
+    /// nil when the rule set's action synthesizes the response without an
+    /// outer leg (``MITMRewriteAction/synthesizesResponse``). The
+    /// transparent flow always sets it.
+    private let proxyConnection: ProxyConnection?
     private let proxyClient: ProxyClient?
+
+    /// True iff this session must produce its own response (302 / 200)
+    /// without ever connecting upstream.
+    private var synthesizesResponse: Bool {
+        rewriteTarget?.action.synthesizesResponse ?? false
+    }
+
+    private var synthesizer: MITMResponseSynthesizer?
 
     /// Bytes received from the client before the inner ``TLSServer`` was
     /// created. Always begins with a complete ClientHello; may also
@@ -165,6 +176,16 @@ final class MITMSession {
 
     private let h2Rewriter: MITMHTTP2Rewriter
 
+    /// Lazy JavaScript runtime shared by both HTTP/1 streams and the
+    /// HTTP/2 rewriter. Materializes only when a ``CompiledMITMOperation/script``
+    /// rule actually fires for this connection.
+    private let scriptEngineProvider = MITMScriptEngine.Provider()
+
+    /// Cross-direction record of the in-flight request's method+URL so
+    /// the response-phase script ctx can populate `ctx.method` /
+    /// `ctx.url` from the request that produced this response.
+    private let requestLog = MITMRequestLog()
+
     private var torn = false
 
     /// Set by the lwIP-side caller to receive inner-leg bytes that need
@@ -186,7 +207,7 @@ final class MITMSession {
         policy: MITMRewritePolicy,
         rewriteTarget: MITMRewriteTarget?,
         proxyClient: ProxyClient?,
-        proxyConnection: ProxyConnection,
+        proxyConnection: ProxyConnection?,
         lwipQueue: DispatchQueue
     ) {
         self.dstHost = dstHost
@@ -210,18 +231,24 @@ final class MITMSession {
             host: dstHost,
             phase: .httpRequest,
             policy: policy,
-            effectiveAuthority: effectiveAuthority
+            effectiveAuthority: effectiveAuthority,
+            scriptEngineProvider: scriptEngineProvider,
+            requestLog: requestLog
         )
         self.responseStream = MITMHTTP1Stream(
             host: dstHost,
             phase: .httpResponse,
             policy: policy,
-            effectiveAuthority: nil // Host headers do not apply on responses.
+            effectiveAuthority: nil, // Host headers do not apply on responses.
+            scriptEngineProvider: scriptEngineProvider,
+            requestLog: requestLog
         )
         self.h2Rewriter = MITMHTTP2Rewriter(
             host: dstHost,
             policy: policy,
-            effectiveAuthority: effectiveAuthority
+            effectiveAuthority: effectiveAuthority,
+            scriptEngineProvider: scriptEngineProvider,
+            requestLog: requestLog
         )
     }
 
@@ -231,14 +258,25 @@ final class MITMSession {
     /// the outer leg has negotiated an ALPN, so both sides commit to the
     /// same application protocol (h2 or http/1.1). Must be called on
     /// `lwipQueue`.
+    ///
+    /// In synthesize-response mode (302 / 200 reject), there is no outer
+    /// leg. The inner handshake runs immediately, accepting both ALPNs
+    /// (h2 and http/1.1) and both TLS versions the client supports, so
+    /// the client's preference wins.
     func start(sni: String) {
-        // Peek at the buffered ClientHello to pull the inner client's
-        // ALPN offer and TLS version capability. If the inner client does
-        // not advertise TLS 1.3, constrain the outer leg to TLS 1.2 so both
-        // legs can mirror the negotiated version.
         let parsed = parseClientHello(pendingClientBytes)
         let clientALPNs = parsed?.alpnProtocols ?? []
         let clientSupportsTLS13 = parsed?.supportedVersions.contains(0x0304) ?? true
+
+        if synthesizesResponse {
+            startSynthesizeOnlyInnerHandshake(
+                sni: sni,
+                clientALPNs: clientALPNs,
+                clientSupportsTLS13: clientSupportsTLS13
+            )
+            return
+        }
+
         // Outer SNI follows the redirect when present. The inner leaf
         // certificate uses ``sni`` so the client sees the requested host.
         let outerSNI = rewriteTarget?.host ?? sni
@@ -296,8 +334,35 @@ final class MITMSession {
         innerRecord = nil
         outerRecord?.cancel()
         outerRecord = nil
+        synthesizer = nil
         innerTransport.forceCancel()
         onTeardown?(error)
+    }
+
+    // MARK: - Synthesize-Response Mode
+
+    /// Starts the response synthesizer once the inner TLS handshake has
+    /// completed. The synthesizer handles request parsing and the canned
+    /// response on its own; it calls back through ``onTeardown`` (via
+    /// ``cancel(error:)``) once the response has been written or an
+    /// unrecoverable error occurs.
+    private func startResponseSynthesizer(inner: TLSRecordConnection, alpn: String) {
+        guard let target = rewriteTarget else {
+            cancel(error: nil)
+            return
+        }
+        let httpVersion: MITMResponseSynthesizer.HTTPVersion = (alpn == "h2") ? .http2 : .http11
+        let synth = MITMResponseSynthesizer(
+            record: inner,
+            httpVersion: httpVersion,
+            target: target,
+            queue: lwipQueue
+        ) { [weak self] error in
+            guard let self else { return }
+            self.cancel(error: error)
+        }
+        self.synthesizer = synth
+        synth.start()
     }
 
     // MARK: - Inner Handshake
@@ -309,6 +374,13 @@ final class MITMSession {
     /// fingerprinting drift between what the user thinks they negotiated
     /// and what we negotiated upstream.
     private func startInnerHandshake(sni: String, alpn: String, tlsVersion: UInt16) {
+        startInnerHandshake(sni: sni, alpns: [alpn], tlsVersions: [tlsVersion])
+    }
+
+    /// Multi-ALPN / multi-version variant used in synthesize-response
+    /// mode, where there is no outer leg to mirror and the client's
+    /// preference wins instead.
+    private func startInnerHandshake(sni: String, alpns: [String], tlsVersions: Set<UInt16>) {
         do {
             let leaf = try leafCache.leaf(for: sni)
             let server = TLSServer(
@@ -316,8 +388,8 @@ final class MITMSession {
                 leafCertDER: leaf.certificateDER,
                 leafPrivateKey: leaf.privateKeySecKey,
                 leafSigningKeyP256: leaf.privateKey,
-                acceptableALPNs: [alpn],
-                acceptableTLSVersions: [tlsVersion]
+                acceptableALPNs: alpns,
+                acceptableTLSVersions: tlsVersions
             )
             server.delegate = self
             tlsServer = server
@@ -328,9 +400,26 @@ final class MITMSession {
             server.feed(pendingClientBytes)
             pendingClientBytes.removeAll(keepingCapacity: false)
         } catch {
-            logger.error("[MITM] Inner handshake start failed for \(sni): \(error)")
             cancel(error: error)
         }
+    }
+
+    /// Synthesize-mode entry point. Picks ALPN and TLS version sets from
+    /// the client's offer alone (no outer leg to mirror) and starts the
+    /// inner handshake. Both ``http/1.1`` and ``h2`` are accepted; the
+    /// client's preference order wins. Falls back to ``http/1.1`` when
+    /// the client offered no ALPN.
+    private func startSynthesizeOnlyInnerHandshake(
+        sni: String,
+        clientALPNs: [String],
+        clientSupportsTLS13: Bool
+    ) {
+        let supported: Set<String> = ["h2", "http/1.1"]
+        let intersected = clientALPNs.filter { supported.contains($0) }
+        let alpns: [String] = intersected.isEmpty ? ["http/1.1"] : intersected
+        var tlsVersions: Set<UInt16> = [0x0303]
+        if clientSupportsTLS13 { tlsVersions.insert(0x0304) }
+        startInnerHandshake(sni: sni, alpns: alpns, tlsVersions: tlsVersions)
     }
 
     // MARK: - Outer Handshake
@@ -369,7 +458,15 @@ final class MITMSession {
         let client = TLSClient(configuration: configuration)
         tlsClient = client
 
-        client.connect(overTunnel: proxyConnection) { [weak self] result in
+        // The outer handshake path is only entered for actions that
+        // require an upstream connection; ``proxyConnection`` is
+        // guaranteed non-nil here. Synthesize-mode actions (302 / 200)
+        // skip ``startOuterHandshake`` entirely in ``start(sni:)``.
+        guard let outer = proxyConnection else {
+            cancel(error: nil)
+            return
+        }
+        client.connect(overTunnel: outer) { [weak self] result in
             guard let self else { return }
             self.lwipQueue.async {
                 guard !self.torn else { return }
@@ -382,7 +479,6 @@ final class MITMSession {
                     let alpn = record.negotiatedALPN.isEmpty ? "http/1.1" : record.negotiatedALPN
                     self.startInnerHandshake(sni: innerSNI, alpn: alpn, tlsVersion: record.tlsVersion)
                 case .failure(let error):
-                    logger.error("[MITM] Outer handshake failed for \(self.dstHost): \(error)")
                     self.cancel(error: error)
                 }
             }
@@ -417,6 +513,17 @@ final class MITMSession {
 
     /// Reads plaintext from the inner record (= what the client sent) and
     /// writes it to the outer record (= towards the real server).
+    ///
+    /// Request-phase scripts can short-circuit a request via
+    /// ``MITMScriptEngine/SynthesizedResponse`` (the JS-side
+    /// `Anywhere.respond(...)` hook). When that happens the stream /
+    /// h2 translator emits zero upstream bytes but populates a
+    /// client-bound buffer with the synthesized response; we drain
+    /// that buffer here and write straight to the inner record,
+    /// bypassing the upstream leg entirely. The two writes are
+    /// independent (different legs) and ``TLSRecordConnection``'s send
+    /// lock serializes any concurrent inner writes that may happen
+    /// alongside an in-flight outbound-pump write.
     private func startInboundPump(inner: TLSRecordConnection, outer: TLSRecordConnection) {
         inner.receive { [weak self] data, error in
             guard let self else { return }
@@ -430,16 +537,27 @@ final class MITMSession {
                     return
                 }
                 let transformed: Data
+                let injected: Data
                 if let inboundH2 = self.inboundH2 {
                     transformed = inboundH2.process(data)
+                    injected = inboundH2.drainPendingClientBytes()
                 } else {
                     transformed = self.requestStream.transform(data)
+                    injected = self.requestStream.drainPendingClientBytes()
+                }
+                if !injected.isEmpty {
+                    inner.send(data: injected) { [weak self] sendError in
+                        guard let self, let sendError else { return }
+                        self.lwipQueue.async { self.cancel(error: sendError) }
+                    }
                 }
                 guard !transformed.isEmpty else {
                     // The h2 translator or HTTP/1.1 stream may have
                     // buffered fragments (CONTINUATION pending, partial
-                    // preface, body buffered for rewrite, etc.). Loop
-                    // back for more bytes without writing.
+                    // preface, body buffered for rewrite, etc.) or
+                    // fully short-circuited the request via
+                    // Anywhere.respond. Loop back for more bytes
+                    // without writing to outer.
                     self.startInboundPump(inner: inner, outer: outer)
                     return
                 }
@@ -511,11 +629,15 @@ extension MITMSession: TLSServerDelegate {
         record.prependToReceiveBuffer(clientFinishedHandshakeTrailer)
         innerRecord = record
         tlsServer = nil
-        tryStartShuttling()
+
+        if synthesizesResponse {
+            startResponseSynthesizer(inner: record, alpn: alpn)
+        } else {
+            tryStartShuttling()
+        }
     }
 
     func tlsServer(_ server: TLSServer, didFail error: TLSError) {
-        logger.error("[MITM] Inner handshake failed for \(dstHost): \(error)")
         cancel(error: error)
     }
 }

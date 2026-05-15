@@ -60,6 +60,15 @@ struct ProxyListView: View {
         }
         .navigationTitle("Proxies")
         .toolbar {
+            if standaloneConfigurations.count > 1 || viewModel.subscriptions.count > 1 {
+                ToolbarItem {
+                    NavigationLink {
+                        ReorderProxiesView()
+                    } label: {
+                        Label("Reorder Proxies", systemImage: "arrow.up.arrow.down")
+                    }
+                }
+            }
             ToolbarItem {
                 Button {
                     let visibleConfigurations = standaloneConfigurations + subscribedGroups
@@ -204,7 +213,7 @@ struct ProxyListView: View {
             viewModel.selectedConfiguration = configuration
         } label: {
             HStack {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading) {
                     HStack {
                         Text(configuration.name)
                             .font(.body.weight(.medium))

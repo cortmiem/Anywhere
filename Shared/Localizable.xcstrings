@@ -242,6 +242,608 @@
         }
       }
     },
+    "%lld byte(s)" : {
+      "localizations" : {
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld بايتات"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld بايتًا"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "بايت واحد"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld بايت"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "بايتان"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld byte"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld bytes"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld byte"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld bytes"
+                }
+              }
+            }
+          }
+        },
+        "fa" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld بایت"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld байта"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld байт"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld байт"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld байт"
+                }
+              }
+            }
+          }
+        },
+        "tk" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld bayt"
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld bayt"
+                }
+              }
+            }
+          }
+        },
+        "vi" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld byte"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 字节"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld domain suffix(es) · %lld rule(s)" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@arg1@ · %#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg لاحقات نطاق"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg لاحقة نطاق"
+                    }
+                  },
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "لاحقة نطاق واحدة"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg لاحقة نطاق"
+                    }
+                  },
+                  "two" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "لاحقتا نطاق"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg قواعد"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg قاعدة"
+                    }
+                  },
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "قاعدة واحدة"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg قاعدة"
+                    }
+                  },
+                  "two" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "قاعدتان"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@arg1@ · %#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg domain suffix"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg domain suffixes"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg rule"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg rules"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@arg1@ · %#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg sufijo de dominio"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg sufijos de dominio"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg regla"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg reglas"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@arg1@ · %#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg پسوند دامنه"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg قانون"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@arg1@ · %#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg суффикса доменов"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg суффиксов доменов"
+                    }
+                  },
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg суффикс домена"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg суффиксов доменов"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg правила"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg правил"
+                    }
+                  },
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg правило"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg правил"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@arg1@ · %#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg domen goşulmasy"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg düzgün"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@arg1@ · %#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg alan adı soneki"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg kural"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@arg1@ · %#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg hậu tố tên miền"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg quy tắc"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@arg1@ · %#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg 个域名尾缀"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg 条规则"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld ms" : {
       "localizations" : {
         "ar" : {
@@ -300,60 +902,168 @@
         }
       }
     },
-    "%lld proxies" : {
+    "%lld proxie(s)" : {
       "localizations" : {
         "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld بروكسي"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld بروكسيات"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld بروكسيًا"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "بروكسي واحد"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld بروكسي"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "بروكسيان"
+                }
+              }
+            }
           }
         },
         "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld proxies"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld proxy"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld proxies"
+                }
+              }
+            }
           }
         },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld proxies"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld proxy"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld proxies"
+                }
+              }
+            }
           }
         },
         "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld پروکسی"
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld پروکسی"
+                }
+              }
+            }
           }
         },
         "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld прокси"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld прокси"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld прокси"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld прокси"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld прокси"
+                }
+              }
+            }
           }
         },
         "tk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld proksi"
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld proksi"
+                }
+              }
+            }
           }
         },
         "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld proxy"
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld proxy"
+                }
+              }
+            }
           }
         },
         "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld proxy"
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld proxy"
+                }
+              }
+            }
           }
         },
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 个代理"
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 个代理"
+                }
+              }
+            }
           }
         }
       }
@@ -520,6 +1230,122 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "200 Reject" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "200 رفض"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "200 Reject"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "200 Rechazar"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "200 رد"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "200 Отклонить"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "200 Ret"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "200 Reddet"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "200 Từ chối"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "200 拒绝"
+          }
+        }
+      }
+    },
+    "302 Redirect" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "302 إعادة توجيه"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "302 Redirect"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "302 Redirigir"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "302 تغییر مسیر"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "302 Перенаправление"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "302 Gönükdirme"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "302 Yönlendir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "302 Chuyển hướng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "302 重定向"
           }
         }
       }
@@ -1170,6 +1996,12 @@
             "value" : "إضافة مجموعة قواعد"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Rule Set"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1583,6 +2415,12 @@
             "value" : "سيتوقف أي ملف تعريف MITM مثبت سابقًا عن العمل حتى تعيد تثبيت الشهادة الجديدة."
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Any previously installed MITM profile will stop working until you re-install the new certificate."
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1688,48 +2526,54 @@
         }
       }
     },
-    "Anywhere MITM Rule List URL" : {
+    "Anywhere MITM Rule Set URL" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "رابط قائمة قواعد MITM لـ Anywhere"
+            "value" : "رابط مجموعة قواعد Anywhere MITM"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anywhere MITM Rule Set URL"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "URL de lista de reglas MITM de Anywhere"
+            "value" : "URL del conjunto de reglas Anywhere MITM"
           }
         },
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "آدرس لیست قوانین MITM در Anywhere"
+            "value" : "نشانی مجموعه قانون Anywhere MITM"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "URL списка правил MITM Anywhere"
+            "value" : "URL набора правил Anywhere MITM"
           }
         },
         "tk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anywhere MITM düzgün sanawy URL"
+            "value" : "Anywhere MITM düzgünler toplumynyň URL-i"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anywhere MITM Kural Listesi URL'si"
+            "value" : "Anywhere MITM Kural Seti URL'si"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "URL danh sách quy tắc MITM Anywhere"
+            "value" : "URL bộ quy tắc Anywhere MITM"
           }
         },
         "zh-Hans" : {
@@ -1746,6 +2590,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "شهادة Anywhere الجذرية مثبتة وموثوقة."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anywhere Root Certificate is installed and trusted."
           }
         },
         "es" : {
@@ -1792,60 +2642,60 @@
         }
       }
     },
-    "Anywhere Rule List URL" : {
+    "Anywhere Routing Rule Set URL" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "رابط قائمة قواعد Anywhere"
+            "value" : "رابط مجموعة قواعد التوجيه Anywhere"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anywhere Rule List URL"
+            "value" : "Anywhere Routing Rule Set URL"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "URL de lista de reglas de Anywhere"
+            "value" : "URL del conjunto de reglas de enrutamiento Anywhere"
           }
         },
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "آدرس لیست قوانین Anywhere"
+            "value" : "نشانی مجموعه قانون مسیریابی Anywhere"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "URL списка правил Anywhere"
+            "value" : "URL набора правил маршрутизации Anywhere"
           }
         },
         "tk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anywhere düzgün sanawy URL"
+            "value" : "Anywhere ugratma düzgünleri toplumynyň URL-i"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anywhere Kural Listesi URL'si"
+            "value" : "Anywhere Yönlendirme Kural Seti URL'si"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "URL danh sách quy tắc Anywhere"
+            "value" : "URL bộ quy tắc định tuyến Anywhere"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anywhere 规则列表 URL"
+            "value" : "Anywhere 路由规则列表 URL"
           }
         }
       }
@@ -2211,54 +3061,113 @@
         }
       }
     },
-    "Body Replace" : {
+    "Body Script" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "استبدال الجسم"
+            "value" : "سكربت النص"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reemplazar cuerpo"
+            "value" : "Script de cuerpo"
           }
         },
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "جایگزینی بدنه"
+            "value" : "اسکریپت بدنه"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Замена тела"
+            "value" : "Скрипт тела"
           }
         },
         "tk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bedeni çalşyr"
+            "value" : "Body skript"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gövdeyi Değiştir"
+            "value" : "Gövde Betiği"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thay thế nội dung"
+            "value" : "Tập lệnh thân"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "体替换"
+            "value" : "体脚本"
+          }
+        }
+      }
+    },
+    "Body Type" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نوع الجسم"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Body Type"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de cuerpo"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نوع بدنه"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тип тела"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beden görnüşi"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gövde Türü"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loại nội dung"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "体类型"
           }
         }
       }
@@ -2610,6 +3519,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在连接..."
+          }
+        }
+      }
+    },
+    "Content" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المحتوى"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Content"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contenido"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محتوا"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Содержимое"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mazmun"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İçerik"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nội dung"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内容"
           }
         }
       }
@@ -2966,6 +3933,64 @@
       "comment" : "Custom Tables for Sudoku protocol",
       "shouldTranslate" : false
     },
+    "Data" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيانات"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datos"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "داده"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Данные"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maglumat"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veri"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dữ liệu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数据"
+          }
+        }
+      }
+    },
     "Default" : {
       "localizations" : {
         "ar" : {
@@ -3088,6 +4113,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حذف الشهادة"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Certificate"
           }
         },
         "es" : {
@@ -3311,6 +4342,64 @@
     "Disable HTTP Mask" : {
       "comment" : "Disable HTTP Mask for Sudoku protocol",
       "shouldTranslate" : false
+    },
+    "Disabled" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معطل"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disabled"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivado"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غیرفعال"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отключено"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öçürilen"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Devre Dışı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã tắt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未启用"
+          }
+        }
+      }
     },
     "Disconnected" : {
       "localizations" : {
@@ -3608,54 +4697,60 @@
         }
       }
     },
-    "Domain suffix is required." : {
+    "Domain Suffixes" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لاحقة النطاق مطلوبة."
+            "value" : "لاحقات النطاق"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Domain Suffixes"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Se requiere el sufijo de dominio."
+            "value" : "Sufijos de dominio"
           }
         },
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "پسوند دامنه الزامی است."
+            "value" : "پسوندهای دامنه"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Требуется суффикс домена."
+            "value" : "Суффиксы доменов"
           }
         },
         "tk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Domen goşulmasy hökmany."
+            "value" : "Domen goşulmalary"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alan adı soneki gereklidir."
+            "value" : "Alan Adı Sonekleri"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hậu tố tên miền là bắt buộc."
+            "value" : "Hậu tố tên miền"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "必须指定域名尾缀。"
+            "value" : "域名尾缀"
           }
         }
       }
@@ -4016,6 +5111,12 @@
             "value" : "تعديل القاعدة"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Rule"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4056,58 +5157,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "编辑规则"
-          }
-        }
-      }
-    },
-    "Edit Rule Set" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تعديل مجموعة القواعد"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Editar conjunto de reglas"
-          }
-        },
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ویرایش مجموعه قانون"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Изменить набор правил"
-          }
-        },
-        "tk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Düzgünler toplumyny üýtget"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kural Setini Düzenle"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sửa bộ quy tắc"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "编辑规则集"
           }
         }
       }
@@ -4701,6 +5750,12 @@
             "value" : "خطأ"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4869,6 +5924,12 @@
             "value" : "تصدير الشهادة"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export Certificate"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4919,6 +5980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل تصدير الشهادة."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to export certificate."
           }
         },
         "es" : {
@@ -4973,6 +6040,12 @@
             "value" : "فشل تصدير الملف التعريفي."
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to export profile."
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5023,6 +6096,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل فتح مثبّت الملف التعريفي."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to open profile installer."
           }
         },
         "es" : {
@@ -5084,6 +6163,12 @@
             "value" : "أنشئ شهادة للبدء."
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generate a certificate to begin."
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5134,6 +6219,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إنشاء شهادة"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generate Certificate"
           }
         },
         "es" : {
@@ -5429,6 +6520,12 @@
             "value" : "إضافة ترويسة"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Header Add"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5479,6 +6576,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حذف ترويسة"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Header Delete"
           }
         },
         "es" : {
@@ -5533,6 +6636,12 @@
             "value" : "اسم الترويسة"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Header Name"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5583,6 +6692,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اسم الترويسة مطلوب."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Header name is required."
           }
         },
         "es" : {
@@ -5637,6 +6752,12 @@
             "value" : "استبدال ترويسة"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Header Replace"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5687,6 +6808,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "قيمة الترويسة"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Header Value"
           }
         },
         "es" : {
@@ -6155,60 +7282,60 @@
         }
       }
     },
-    "Import Rules" : {
+    "Import Rule Set" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "استيراد القواعد"
+            "value" : "استيراد مجموعة قواعد"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import Rules"
+            "value" : "Import Rule Set"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importar reglas"
+            "value" : "Importar conjunto de reglas"
           }
         },
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "وارد کردن قوانین"
+            "value" : "وارد کردن مجموعه قانون"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Импорт правил"
+            "value" : "Импорт набора правил"
           }
         },
         "tk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Düzgünleri import etmek"
+            "value" : "Düzgünler toplumyny import et"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kuralları İçe Aktar"
+            "value" : "Kural Setini İçe Aktar"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nhập quy tắc"
+            "value" : "Nhập bộ quy tắc"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "导入规则"
+            "value" : "导入规则集"
           }
         }
       }
@@ -6279,6 +7406,12 @@
             "value" : "تثبيت الشهادة"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install Certificate"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6329,6 +7462,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ثبّت الملف التعريفي وامنحه الثقة في الإعدادات لاستخدام MITM."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install the profile and trust in Settings to use MITM."
           }
         },
         "es" : {
@@ -7800,6 +8939,12 @@
             "value" : "لا توجد شهادة"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Certificate"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8374,6 +9519,12 @@
             "value" : "غير موثوق"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not Trusted"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8658,6 +9809,12 @@
             "value" : "العملية"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operation"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8899,6 +10056,12 @@
             "value" : "النمط"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pattern"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8951,6 +10114,12 @@
             "value" : "النمط ليس تعبيرًا منتظمًا صالحًا."
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pattern is not a valid regular expression."
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9001,6 +10170,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "النمط مطلوب."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pattern is required."
           }
         },
         "es" : {
@@ -9113,6 +10288,12 @@
             "value" : "المرحلة"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phase"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9211,58 +10392,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "端口"
-          }
-        }
-      }
-    },
-    "Port must be a number between 1 and 65535." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يجب أن يكون المنفذ رقمًا بين 1 و65535."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El puerto debe ser un número entre 1 y 65535."
-          }
-        },
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "پورت باید عددی بین ۱ و ۶۵۵۳۵ باشد."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Порт должен быть числом от 1 до 65535."
-          }
-        },
-        "tk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Port 1 bilen 65535 aralygyndaky san bolmaly."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bağlantı noktası 1 ile 65535 arasında bir sayı olmalıdır."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cổng phải là số từ 1 đến 65535."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "端口必须为 1 至 65535 之间的数字。"
           }
         }
       }
@@ -9686,11 +10815,18 @@
       }
     },
     "Redirect" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "إعادة توجيه"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redirect"
           }
         },
         "es" : {
@@ -9737,64 +10873,18 @@
         }
       }
     },
-    "Redirect host is required when redirect is enabled." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مضيف إعادة التوجيه مطلوب عند تمكين إعادة التوجيه."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se requiere el host de redirección cuando la redirección está habilitada."
-          }
-        },
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "وقتی تغییر مسیر فعال است، میزبان تغییر مسیر الزامی است."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Хост перенаправления требуется при включенном перенаправлении."
-          }
-        },
-        "tk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gaýtadan ugratmak işjeň bolanda, gaýtadan ugratmak hosty hökmany."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yönlendirme etkinleştirildiğinde yönlendirme host'u gereklidir."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Host chuyển hướng là bắt buộc khi chuyển hướng được bật."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "当启用重定向时，必须指定重定向主机。"
-          }
-        }
-      }
-    },
     "Regenerate" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "إعادة الإنشاء"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regenerate"
           }
         },
         "es" : {
@@ -9847,6 +10937,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إعادة إنشاء الشهادة"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regenerate Certificate"
           }
         },
         "es" : {
@@ -10128,12 +11224,76 @@
         }
       }
     },
+    "Reorder Proxies" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعادة ترتيب البروكسيات"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reorder Proxies"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reordenar proxies"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مرتب‌سازی مجدد پروکسی‌ها"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изменить порядок прокси"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proksileri täzeden tertiplemek"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proxy'leri Yeniden Sırala"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sắp xếp lại Proxy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新排序代理"
+          }
+        }
+      }
+    },
     "Replacement" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "الاستبدال"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replacement"
           }
         },
         "es" : {
@@ -10186,6 +11346,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "طلب"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request"
           }
         },
         "es" : {
@@ -10298,6 +11464,12 @@
             "value" : "استجابة"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Response"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10342,12 +11514,77 @@
         }
       }
     },
+    "Rewrite" : {
+      "comment" : "MITM rewrite action",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعادة كتابة"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rewrite"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reescritura"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بازنویسی"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перезапись"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gaýtadan ýazmak"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeniden Yazma"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viết lại"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重写"
+          }
+        }
+      }
+    },
     "Root Certificate" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "الشهادة الجذرية"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Root Certificate"
           }
         },
         "es" : {
@@ -10866,6 +12103,12 @@
             "value" : "مجموعات القواعد"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rule Sets"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11080,6 +12323,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "扫描二维码"
+          }
+        }
+      }
+    },
+    "Script" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نص برمجي"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Script"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Script"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسکریپت"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрипт"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skript"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komut Dosyası"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tập lệnh"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "脚本"
           }
         }
       }
@@ -11453,6 +12754,64 @@
     "Stream One" : {
       "shouldTranslate" : false
     },
+    "Stream Script" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نص برمجي للتدفق"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stream Script"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Script de Flujo"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسکریپت جریانی"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Потоковый скрипт"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akym skripti"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akış Komut Dosyası"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tập lệnh luồng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "流式脚本"
+          }
+        }
+      }
+    },
     "Stream Up" : {
       "shouldTranslate" : false
     },
@@ -11498,6 +12857,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abonelik"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đăng ký"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "订阅"
+          }
+        }
+      }
+    },
+    "Subscriptions" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الاشتراكات"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subscriptions"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suscripciones"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اشتراک‌ها"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подписки"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abunalar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abonelikler"
           }
         },
         "vi" : {
@@ -11752,6 +13169,64 @@
         }
       }
     },
+    "Text" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نص"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متن"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Текст"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tekst"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metin"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Văn bản"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本"
+          }
+        }
+      }
+    },
     "The proxy used by the following routing rules was deleted. They have been reset to Default: %@" : {
       "localizations" : {
         "ar" : {
@@ -11922,6 +13397,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "超时"
+          }
+        }
+      }
+    },
+    "Tiny GIF" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF صغيرة"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiny GIF"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF pequeño"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF کوچک"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Крошечный GIF"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kiçijik GIF"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minik GIF"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF nhỏ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "微小 GIF"
           }
         }
       }
@@ -12103,6 +13636,64 @@
         }
       }
     },
+    "Transparent Redirect" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعادة توجيه شفاف"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transparent Redirect"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redirección transparente"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تغییر مسیر شفاف"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прозрачное перенаправление"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aýdyň gönükdirme"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şeffaf Yönlendirme"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chuyển hướng trong suốt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "透明重定向"
+          }
+        }
+      }
+    },
     "Transport" : {
       "comment" : "Transport for VLESS protocol",
       "localizations" : {
@@ -12171,6 +13762,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "موثوق"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trusted"
           }
         },
         "es" : {
@@ -12690,6 +14287,12 @@
             "value" : "استبدال URL"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL Replace"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12801,6 +14404,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الأدوات المساعدة"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilities"
           }
         },
         "es" : {
@@ -13105,6 +14714,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ستحتاج إلى إعادة إنشاء شهادة لاستخدام MITM مرة أخرى."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You'll need to regenerate a certificate to use MITM again."
           }
         },
         "es" : {

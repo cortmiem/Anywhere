@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 @MainActor
 class SubscriptionStore: ObservableObject {
@@ -38,14 +39,16 @@ class SubscriptionStore: ObservableObject {
         save()
     }
 
+    func move(fromOffsets source: IndexSet, toOffset destination: Int) {
+        subscriptions.move(fromOffsets: source, toOffset: destination)
+        save()
+    }
+
     // MARK: - Persistence
 
     private static func load() -> [Subscription] {
-        guard let data = JSONBlobStore.shared.load(.subscriptions),
-              let result = try? JSONDecoder().decode([Subscription].self, from: data) else {
-            return []
-        }
-        return result
+        guard let data = JSONBlobStore.shared.load(.subscriptions) else { return [] }
+        return JSONDecoder().decodeSkippingInvalid([Subscription].self, from: data) ?? []
     }
 
     private func save() {

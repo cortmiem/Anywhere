@@ -9,6 +9,20 @@ import Foundation
 
 private let logger = AnywhereLogger(category: "LWIP-TCP")
 
+private struct HandshakeTimeoutError: LocalizedError {
+    let phase: String
+    var errorDescription: String? { "Handshake timed out during \(phase)" }
+}
+
+private struct LWIPWriteFatalError: LocalizedError {
+    let pending: Int
+    let sndbuf: Int
+    let queuelen: Int
+    var errorDescription: String? {
+        "tcp_write fatal (pending=\(pending), sndbuf=\(sndbuf), queuelen=\(queuelen))"
+    }
+}
+
 class LWIPTCPConnection {
     let pcb: UnsafeMutableRawPointer
     let dstPort: UInt16
@@ -136,6 +150,11 @@ class LWIPTCPConnection {
     private var uplinkDone = false
     private var downlinkDone = false
 
+    /// One-shot reporter that logs this connection's terminal failure at
+    /// most once. All transport error paths funnel through it so the LWIP
+    /// boundary emits exactly one error line per dead connection.
+    private let failureReporter = ConnectionFailureReporter(prefix: "[TCP]", logger: logger)
+
     // MARK: Lifecycle
 
     init(pcb: UnsafeMutableRawPointer, dstHost: String, dstPort: UInt16,
@@ -147,7 +166,7 @@ class LWIPTCPConnection {
         self.dstPort = dstPort
         self.configuration = configuration
         self.lwipQueue = lwipQueue
-        self.bypass = forceBypass || (LWIPStack.shared?.shouldBypass(host: dstHost) == true)
+        self.bypass = forceBypass
         if sniffSNI {
             self.sniffer = TLSClientHelloSniffer()
         }
@@ -159,7 +178,11 @@ class LWIPTCPConnection {
             guard let self, !self.closed else { return }
             if self.isEstablishing {
                 let phase = self.sniffer != nil ? "TLS ClientHello sniff" : "proxy dial"
-                logger.error("[TCP] Handshake timeout during \(phase): \(self.dstHost):\(self.dstPort)")
+                self.failureReporter.report(
+                    operation: "Handshake",
+                    endpoint: self.endpointDescription,
+                    error: HandshakeTimeoutError(phase: phase)
+                )
                 self.abort()
             }
         }
@@ -200,6 +223,9 @@ class LWIPTCPConnection {
     private func appendPendingData(bytes ptr: UnsafePointer<UInt8>, count: Int) -> Bool {
         if pendingData.count + count > TunnelConstants.tcpMaxPendingDataSize {
             logger.warning("[TCP] pendingData cap exceeded for \(dstHost):\(dstPort) (\(pendingData.count) + \(count) > \(TunnelConstants.tcpMaxPendingDataSize)), aborting")
+            // Bottleneck-driven abort: the warning above describes both the
+            // cause and the termination. Suppress any later spurious error.
+            failureReporter.markReported()
             abort()
             return false
         }
@@ -338,7 +364,7 @@ class LWIPTCPConnection {
                 self.uploadPipeline.sendInFlight = false
                 guard !self.closed else { return }
                 if let error {
-                    self.logTransportFailure("Send", error: error)
+                    self.reportFailure("Send", error: error)
                     self.abort()
                     return
                 }
@@ -458,6 +484,9 @@ class LWIPTCPConnection {
         } else {
             logger.warning("[TCP] lwIP aborted connection: \(endpointDescription): \(reason)")
         }
+        // The connection ends here — suppress any later spurious error log
+        // that might fire as in-flight callbacks unwind.
+        failureReporter.markReported()
         closed = true
         releaseProxy()
     }
@@ -466,14 +495,8 @@ class LWIPTCPConnection {
         "\(dstHost):\(dstPort)"
     }
 
-    private func logTransportFailure(_ operation: String, error: Error) {
-        TransportErrorLogger.log(
-            operation: operation,
-            endpoint: endpointDescription,
-            error: error,
-            logger: logger,
-            prefix: "[TCP]"
-        )
+    private func reportFailure(_ operation: String, error: Error) {
+        failureReporter.report(operation: operation, endpoint: endpointDescription, error: error)
     }
 
     // MARK: - Route Commit
@@ -481,8 +504,17 @@ class LWIPTCPConnection {
     /// Kicks off the outbound connection using the currently committed
     /// routing (`configuration`, `bypass`, `dstHost`). Idempotent — no-op
     /// once the connect has started or completed.
+    ///
+    /// Synthesize-mode shortcut: when MITM is on and the matched rule's
+    /// action produces its own response (302 redirect / 200 reject),
+    /// skip the proxy/direct dial entirely and hand the connection to a
+    /// no-outer-leg ``MITMSession``.
     private func beginConnecting() {
-        guard !closed, !proxyConnecting, proxyConnection == nil else { return }
+        guard !closed, !proxyConnecting, proxyConnection == nil, mitmSession == nil else { return }
+        if mitmEnabled, mitmRewriteTarget?.action.synthesizesResponse == true {
+            startSynthesizingMITMSession()
+            return
+        }
         if bypass {
             connectDirect()
         } else {
@@ -549,7 +581,6 @@ class LWIPTCPConnection {
             } else {
                 logger.warning("[TCP] SNI routing configuration not found for \(sni)")
             }
-            bypass = stack.shouldBypass(host: sni)
         }
     }
 
@@ -582,7 +613,7 @@ class LWIPTCPConnection {
                 guard !self.closed else { return }
 
                 if let error {
-                    self.logTransportFailure("Connect", error: error)
+                    self.reportFailure("Connect", error: error)
                     self.abort()
                     return
                 }
@@ -683,7 +714,7 @@ class LWIPTCPConnection {
                     self.tryArmReceive()
 
                 case .failure(let error):
-                    self.logTransportFailure("Connect", error: error)
+                    self.reportFailure("Connect", error: error)
                     self.abort()
                 }
             }
@@ -694,6 +725,31 @@ class LWIPTCPConnection {
 
     /// Starts MITM and transfers upstream reads/writes to ``MITMSession``.
     private func startMITMSession(over proxy: ProxyConnection) {
+        startMITMSession(proxy: proxy, transferringClient: true)
+    }
+
+    /// Starts MITM in synthesize-only mode: the rule set's action
+    /// produces its own response (302 / 200 reject), so no upstream
+    /// connection is dialed. The handshake / activity timers that the
+    /// proxy/direct path normally arms on connect are armed here too,
+    /// since we are skipping the dial that would have done it.
+    private func startSynthesizingMITMSession() {
+        handshakeTimer?.cancel()
+        handshakeTimer = nil
+        activityTimer = ActivityTimer(
+            queue: lwipQueue,
+            timeout: TunnelConstants.connectionIdleTimeout
+        ) { [weak self] in
+            guard let self, !self.closed else { return }
+            self.close()
+        }
+        startMITMSession(proxy: nil, transferringClient: false)
+    }
+
+    /// Shared session bootstrap. ``proxy`` is nil in synthesize-only
+    /// mode; in that case ``MITMSession`` skips the outer handshake and
+    /// drives a ``MITMResponseSynthesizer`` after the inner handshake.
+    private func startMITMSession(proxy: ProxyConnection?, transferringClient: Bool) {
         guard let stack = LWIPStack.shared else { abort(); return }
         let sni = mitmSNI ?? dstHost
 
@@ -706,7 +762,7 @@ class LWIPTCPConnection {
                 stack.mitmLeafCache = made
                 cache = made
             } catch {
-                logger.error("[MITM] Failed to initialize leaf cache: \(error)")
+                reportFailure("MITM leaf cache", error: error)
                 abort()
                 return
             }
@@ -717,8 +773,13 @@ class LWIPTCPConnection {
 
         // Hand off upstream ownership. MITMSession is now the sole party
         // that may call send/receive on `proxy` or cancel `proxyClient`.
-        let transferredClient = proxyClient
-        proxyClient = nil
+        let transferredClient: ProxyClient?
+        if transferringClient {
+            transferredClient = proxyClient
+            proxyClient = nil
+        } else {
+            transferredClient = nil
+        }
         proxyConnection = nil
 
         // Pass SNI as ``dstHost`` instead of the IP-derived value so
@@ -743,6 +804,8 @@ class LWIPTCPConnection {
                     completion?(SocketError.notConnected)
                     return
                 }
+                // Downlink activity in MITM mode — non-MITM path updates this in ``tryArmReceive``.
+                self.activityTimer?.update()
                 self.writeToLWIP(data)
                 completion?(nil)
             }
@@ -751,7 +814,8 @@ class LWIPTCPConnection {
             guard let self else { return }
             self.lwipQueue.async {
                 guard !self.closed else { return }
-                if error != nil {
+                if let error {
+                    self.reportFailure("MITM", error: error)
                     self.abort()
                 } else {
                     self.close()
@@ -799,7 +863,7 @@ class LWIPTCPConnection {
                 guard !self.closed else { return }
 
                 if let error {
-                    self.logTransportFailure("Receive", error: error)
+                    self.reportFailure("Receive", error: error)
                     self.abort()
                     return
                 }
@@ -879,7 +943,10 @@ class LWIPTCPConnection {
                 if n == -1 {
                     let sndbuf = Int(lwip_bridge_tcp_sndbuf(self.pcb))
                     let queuelen = Int(lwip_bridge_tcp_snd_queuelen(self.pcb))
-                    logger.error("[TCP] tcp_write fatal: \(self.dstHost):\(self.dstPort) (pending=\(live), sndbuf=\(sndbuf), queuelen=\(queuelen))")
+                    self.reportFailure(
+                        "Write",
+                        error: LWIPWriteFatalError(pending: live, sndbuf: sndbuf, queuelen: queuelen)
+                    )
                     self.abort()
                     return 0
                 }
@@ -1001,10 +1068,5 @@ class LWIPTCPConnection {
         session?.cancel(error: nil)
         connection?.cancel()
         client?.cancel()
-    }
-
-    deinit {
-        proxyConnection?.cancel()
-        proxyClient?.cancel()
     }
 }
